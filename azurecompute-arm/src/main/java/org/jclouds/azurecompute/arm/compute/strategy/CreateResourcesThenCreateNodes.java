@@ -141,7 +141,10 @@ public class CreateResourcesThenCreateNodes extends CreateNodesWithGroupEncodedI
       TemplateOptions options = template.getOptions();
       if (options.getLoginPassword() == null) {
          Optional<String> passwordOptional = template.getImage().getDefaultCredentials().getOptionalPassword();
-         options.overrideLoginPassword(passwordOptional.or(Passwords.generate()));
+         String tmp = Passwords.generate() + '1';
+         System.out.println("\n\n\nPassword:\t" + tmp);
+         System.out.println("\n\n\n");
+         options.overrideLoginPassword(passwordOptional.or(tmp));
       }
    }
 

@@ -44,6 +44,7 @@ public abstract class VirtualMachineInstance {
    public enum PowerState {
       RUNNING,
       STOPPED,
+      DEALLOCATED,
       UNRECOGNIZED;
 
       public static PowerState fromValue(final String text) {

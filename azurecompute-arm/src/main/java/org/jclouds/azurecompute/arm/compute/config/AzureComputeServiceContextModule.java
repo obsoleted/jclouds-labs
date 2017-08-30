@@ -178,7 +178,7 @@ public class AzureComputeServiceContextModule extends
    @Named(TIMEOUT_NODE_SUSPENDED)
    protected VirtualMachineInStatePredicateFactory provideNodeSuspendedPredicate(final AzureComputeApi api,
          final Timeouts timeouts, final PollPeriod pollPeriod) {
-      return new VirtualMachineInStatePredicateFactory(api, PowerState.STOPPED, timeouts.nodeTerminated,
+      return new VirtualMachineInStatePredicateFactory(api, PowerState.DEALLOCATED, timeouts.nodeTerminated,
             pollPeriod.pollInitialPeriod, pollPeriod.pollMaxPeriod);
    }
 

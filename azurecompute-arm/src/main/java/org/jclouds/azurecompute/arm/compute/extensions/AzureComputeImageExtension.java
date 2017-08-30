@@ -98,8 +98,14 @@ public class AzureComputeImageExtension implements ImageExtension {
       final VirtualMachine vm = api.getVirtualMachineApi(resourceGroupName).get(vmName);
       final IdReference vmIdRef = IdReference.create(vm.id());
 
-      logger.debug(">> stopping node %s...", cloneTemplate.getSourceNodeId());
-      api.getVirtualMachineApi(resourceGroupName).stop(vmName);
+//      logger.debug(">> stopping node %s...", cloneTemplate.getSourceNodeId());
+//      api.getVirtualMachineApi(resourceGroupName).stop(vmName);
+//      checkState(nodeSuspendedPredicate.create(resourceGroupName).apply(vmName),
+//            "Node %s was not suspended within the configured time limit", cloneTemplate.getSourceNodeId());
+
+
+      logger.debug(">> deallocating node %s...", cloneTemplate.getSourceNodeId());
+      api.getVirtualMachineApi(resourceGroupName).deallocate(vmName);
       checkState(nodeSuspendedPredicate.create(resourceGroupName).apply(vmName),
             "Node %s was not suspended within the configured time limit", cloneTemplate.getSourceNodeId());
 

@@ -114,6 +114,11 @@ public interface VirtualMachineApi {
    @Path("/{name}/powerOff")
    void stop(@PathParam("name") String name);
 
+   @Named("Dealloate")
+   @POST
+   @Path("/{name}/deallocate")
+   void deallocate(@PathParam("name") String name);
+
    @Named("generalize")
    @POST
    @Path("/{name}/generalize")
