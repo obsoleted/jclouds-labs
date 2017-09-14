@@ -42,7 +42,14 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
    private List<IpOptions> ipOptions = ImmutableList.of();
    private WindowsConfiguration windowsConfiguration;
    private List<Secrets> secrets = ImmutableList.of();
-   
+
+   // Key vault stuff TODO: Move make this a type probably?
+   private String keyVaultName;
+   private String keyVaultCredentialId;
+   private String keyVaultCredentialSecret;
+   private String keyVaultSecretName;
+   private String keyVaultSecretVersion;
+
    /**
     * Sets the availability set where the nodes will be configured. If it does
     * not exist jclouds will create a new one with the given configuration.
@@ -126,6 +133,15 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
        return this;
     }
 
+    public AzureTemplateOptions keyVaultSecret(String keyVaultName, String keyVaultCredentialId, String keyVaultCredentialSecret, String keyVaultSecretName, String keyVaultSecretVersion) {
+      this.keyVaultName = keyVaultName;
+      this.keyVaultCredentialId = keyVaultCredentialId;
+      this.keyVaultCredentialSecret = keyVaultCredentialSecret;
+      this.keyVaultSecretName = keyVaultSecretName;
+      this.keyVaultSecretVersion = keyVaultSecretVersion;
+      return this;
+    }
+
    public AvailabilitySet getAvailabilitySet() { return availabilitySet; }
    public String getAvailabilitySetName() { return availabilitySetName; }
    public List<DataDisk> getDataDisks() { return dataDisks; }
@@ -133,6 +149,12 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
    public List<IpOptions> getIpOptions() { return ipOptions; }
    public WindowsConfiguration getWindowsConfiguration() { return windowsConfiguration; }
    public List<Secrets> getSecrets() { return secrets; }
+
+   public String getKeyVaultName() { return keyVaultName; }
+   public String getKeyVaultCredentialId() { return keyVaultCredentialId; }
+   public String getKeyVaultCredentialSecret() { return keyVaultCredentialSecret; }
+   public String getKeyVaultSecretName() { return keyVaultSecretName; }
+   public String getKeyVaultSecretVersion() { return keyVaultSecretVersion; }
 
    @Override
    public AzureTemplateOptions clone() {
@@ -271,6 +293,11 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
       public static AzureTemplateOptions secrets(Iterable<? extends Secrets> secrets) {
          AzureTemplateOptions options = new AzureTemplateOptions();
          return options.secrets(secrets);
+      }
+
+      public static AzureTemplateOptions keyVaultSecret(String keyVaultName, String keyVaultCredentialId, String keyVaultCredentialSecret, String keyVaultSecretName, String keyVaultSecretVersion) {
+          AzureTemplateOptions options = new AzureTemplateOptions();
+          return options.keyVaultSecret(keyVaultName, keyVaultCredentialId, keyVaultCredentialSecret, keyVaultSecretName, keyVaultSecretVersion);
       }
    }
 }

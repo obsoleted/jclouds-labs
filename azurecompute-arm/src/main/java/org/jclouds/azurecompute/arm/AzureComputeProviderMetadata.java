@@ -41,6 +41,7 @@ import org.jclouds.azurecompute.arm.domain.Region;
 import org.jclouds.azurecompute.arm.features.AvailabilitySetApi;
 import org.jclouds.azurecompute.arm.features.DeploymentApi;
 import org.jclouds.azurecompute.arm.features.ImageApi;
+import org.jclouds.azurecompute.arm.features.KeyVaultApi;
 import org.jclouds.azurecompute.arm.features.LoadBalancerApi;
 import org.jclouds.azurecompute.arm.features.LocationApi;
 import org.jclouds.azurecompute.arm.features.DiskApi;
@@ -122,6 +123,7 @@ public class AzureComputeProviderMetadata extends BaseProviderMetadata {
       properties.put(API_VERSION_PREFIX + ImageApi.class.getSimpleName(), "2016-04-30-preview");
       properties.put(API_VERSION_PREFIX + MetricDefinitionsApi.class.getSimpleName(), "2017-05-01-preview");
       properties.put(API_VERSION_PREFIX + MetricsApi.class.getSimpleName(), "2016-09-01");
+      properties.put(API_VERSION_PREFIX + KeyVaultApi.class.getSimpleName(), "2016-10-01");
       
       return properties;
    }

@@ -25,6 +25,7 @@ import org.jclouds.azurecompute.arm.features.DeploymentApi;
 import org.jclouds.azurecompute.arm.features.DiskApi;
 import org.jclouds.azurecompute.arm.features.ImageApi;
 import org.jclouds.azurecompute.arm.features.JobApi;
+import org.jclouds.azurecompute.arm.features.KeyVaultApi;
 import org.jclouds.azurecompute.arm.features.LoadBalancerApi;
 import org.jclouds.azurecompute.arm.features.LocationApi;
 import org.jclouds.azurecompute.arm.features.MetricDefinitionsApi;
@@ -228,4 +229,7 @@ public interface AzureComputeApi extends Closeable {
     */
    @Delegate
    MetricDefinitionsApi getMetricsDefinitionsApi(@PathParam("resourceid") String resourceid);
+
+   @Delegate
+   KeyVaultApi getKeyVaultlApi(String vaulName, String id, String secret);
 }

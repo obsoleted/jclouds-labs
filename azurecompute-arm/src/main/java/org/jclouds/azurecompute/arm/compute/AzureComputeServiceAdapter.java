@@ -76,6 +76,7 @@ import org.jclouds.azurecompute.arm.domain.PublicIPAddressProperties;
 import org.jclouds.azurecompute.arm.domain.ResourceGroup;
 import org.jclouds.azurecompute.arm.domain.ResourceProviderMetaData;
 import org.jclouds.azurecompute.arm.domain.SKU;
+import org.jclouds.azurecompute.arm.domain.SecretBundle;
 import org.jclouds.azurecompute.arm.domain.StorageAccountType;
 import org.jclouds.azurecompute.arm.domain.StorageProfile;
 import org.jclouds.azurecompute.arm.domain.VMHardware;
@@ -84,6 +85,7 @@ import org.jclouds.azurecompute.arm.domain.VMSize;
 import org.jclouds.azurecompute.arm.domain.Version;
 import org.jclouds.azurecompute.arm.domain.VirtualMachine;
 import org.jclouds.azurecompute.arm.domain.VirtualMachineProperties;
+import org.jclouds.azurecompute.arm.features.KeyVaultApi;
 import org.jclouds.azurecompute.arm.features.NetworkInterfaceCardApi;
 import org.jclouds.azurecompute.arm.features.OSImageApi;
 import org.jclouds.compute.ComputeServiceAdapter;
@@ -91,6 +93,7 @@ import org.jclouds.compute.domain.Image;
 import org.jclouds.compute.domain.OsFamily;
 import org.jclouds.compute.domain.Template;
 import org.jclouds.compute.functions.GroupNamingConvention;
+import org.jclouds.compute.options.TemplateOptions;
 import org.jclouds.compute.reference.ComputeServiceConstants;
 import org.jclouds.location.Region;
 import org.jclouds.logging.Logger;
@@ -373,6 +376,22 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
       });
    }
 
+   private String getKeyVaultPublicKey(Template template) {
+      TemplateOptions options = template.getOptions();
+      if (options instanceof  AzureTemplateOptions) {
+         AzureTemplateOptions azureTemplateOptions = AzureTemplateOptions.class.cast(options);
+         // TOOD: Check validity of other values...
+         if (azureTemplateOptions.getKeyVaultName() != null) {
+            KeyVaultApi keyVaultApi = api.getKeyVaultlApi(azureTemplateOptions.getKeyVaultName(), azureTemplateOptions.getKeyVaultCredentialId(), azureTemplateOptions.getKeyVaultCredentialSecret());
+            SecretBundle secret = keyVaultApi.getSecret(azureTemplateOptions.getKeyVaultName(), azureTemplateOptions.getKeyVaultSecretName(), azureTemplateOptions.getKeyVaultSecretVersion());
+            if (secret != null && secret.value() != null) {
+              return secret.value();
+            }
+         }
+      }
+      return null;
+   }
+
    private OSProfile createOsProfile(String computerName, Template template) {
       String defaultLoginUser = template.getImage().getDefaultCredentials().getUser();
       String adminUsername = MoreObjects.firstNonNull(template.getOptions().getLoginUser(), defaultLoginUser);
@@ -380,6 +399,16 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
       String adminPassword = template.getOptions().getLoginPassword();
       OSProfile.Builder builder = OSProfile.builder().adminUsername(adminUsername).adminPassword(adminPassword)
               .computerName(computerName);
+
+     //TODO: Figure out the right place to do this keyvault check
+     if (template.getOptions().getPublicKey() != null
+             && OsFamily.WINDOWS != template.getImage().getOperatingSystem().getFamily()) {
+        String publicKeyFromKeyVault = getKeyVaultPublicKey(template);
+        if (publicKeyFromKeyVault != null) {
+           template.getOptions().authorizePublicKey(publicKeyFromKeyVault);
+        }
+     }
+
 
       if (template.getOptions().getPublicKey() != null
               && OsFamily.WINDOWS != template.getImage().getOperatingSystem().getFamily()) {
